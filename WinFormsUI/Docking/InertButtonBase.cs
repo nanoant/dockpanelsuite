@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 
 namespace WeifenLuo.WinFormsUI.Docking
@@ -133,14 +134,19 @@ namespace WeifenLuo.WinFormsUI.Docking
 
                 imageAttributes.SetRemapTable(colorMap);
 
+                InterpolationMode prevInterpolation = e.Graphics.InterpolationMode;
+                e.Graphics.InterpolationMode = InterpolationMode.NearestNeighbor;
                 e.Graphics.DrawImage(
                    Image,
-                   new Rectangle(0, 0, Image.Width, Image.Height),
+                   PatchController.EnableHighDpi == true
+                     ? ClientRectangle
+                     : new Rectangle(0, 0, Image.Width, Image.Height),
                    0, 0,
                    Image.Width,
                    Image.Height,
                    GraphicsUnit.Pixel,
                    imageAttributes);
+                e.Graphics.InterpolationMode = prevInterpolation;
             }
 
             base.OnPaint(e);
